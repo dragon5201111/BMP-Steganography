@@ -7,7 +7,7 @@ void _print_bmp_header(bmp_header * bmp_header){
     printf("Signature: %c%c\n", (bmp_header->signature & 0xFF), (bmp_header->signature >> 8));
     printf("File Size: %u bytes\n", bmp_header->file_size);
     printf("Reserved: %u\n", bmp_header->reserved);
-    printf("Data Offset: %u\n", bmp_header->data_offset);
+    printf("Data Offset: %u bytes\n", bmp_header->data_offset);
     putchar('\n');
 }
 

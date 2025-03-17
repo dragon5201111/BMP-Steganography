@@ -20,8 +20,10 @@ int main(int argc, char ** argv){
     bmp_info_header bmp_info_h;
     read_bmp_file_into_bmp_header(bmp_file, &bmp_h);
     read_bmp_file_into_bmp_info_header(bmp_file, &bmp_info_h);
+    
     _print_bmp_header(&bmp_h);
     _print_bmp_info_header(&bmp_info_h);
+
     fclose(bmp_file);
     return 0;
 }
