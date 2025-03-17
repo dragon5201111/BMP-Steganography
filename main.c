@@ -4,7 +4,7 @@
 #include "constants.h"
 #include "utility.h"
 
-#define DEBUG
+#define DEBUG_BMP
 
 int main(int argc, char ** argv){
     // argv[1] = bmp file
@@ -34,7 +34,7 @@ int main(int argc, char ** argv){
         return -1;
     }
 
-    #ifdef DEBUG
+    #ifdef DEBUG_BMP
         _print_bmp_header(&bmp_h);
         _print_bmp_info_header(&bmp_info_h);
     #endif

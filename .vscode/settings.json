@@ -3,6 +3,7 @@
         "initializer_list": "c",
         "utility": "c",
         "stdio.h": "c",
-        "bmp.h": "c"
+        "bmp.h": "c",
+        "constants.h": "c"
     }
 }
