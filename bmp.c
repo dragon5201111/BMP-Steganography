@@ -29,6 +29,7 @@ void _print_bmp_info_header(bmp_info_header * bmp_info_header){
     putchar('\n');
 }
 
+// This application will only support 24-bit pixels
 int is_valid_bits_per_pixel(int bits_per_pixel){
     return bits_per_pixel == VALID_BITS_PER_PIXEL;
 }
@@ -53,6 +54,7 @@ int get_pixel_array_width_padding(bmp_info_header * bmp_info_header){
     return (4 - (bmp_info_header->bitmap_width * 3) % 4) % 4;
 }
 
+// Rows of a pixel array for a bmp file are alligned to the nearest 4 byte boundary. Returns width in bytes.
 int get_pixel_array_width(bmp_info_header * bmp_info_header){
     return bmp_info_header->bitmap_width * PIXEL_NUM_BYTES + get_pixel_array_width_padding(bmp_info_header);
 }
