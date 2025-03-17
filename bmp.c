@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "bmp.h"
+#include "constants.h"
 
 void _print_bmp_header(bmp_header * bmp_header){
     printf("BMP Header Information:\n");
@@ -27,6 +29,10 @@ void _print_bmp_info_header(bmp_info_header * bmp_info_header){
     putchar('\n');
 }
 
+int is_valid_bits_per_pixel(int bits_per_pixel){
+    return bits_per_pixel == VALID_BITS_PER_PIXEL;
+}
+
 int read_bmp_file_into_struct(FILE * bmp_file, void * s, size_t struct_size){
     return fread(s, 1, struct_size, bmp_file);
 }
@@ -37,4 +43,20 @@ int read_bmp_file_into_bmp_header(FILE * bmp_file, bmp_header * bmp_header){
 
 int read_bmp_file_into_bmp_info_header(FILE * bmp_file, bmp_info_header * bmp_info_header){
     return read_bmp_file_into_struct(bmp_file, bmp_info_header, sizeof(*bmp_info_header));
+}
+
+int jump_to_data_offset(FILE * bmp_file, bmp_header * bmp_header){
+    return fseek(bmp_file, bmp_header->data_offset, SEEK_SET);
+}
+
+int get_pixel_array_width_padding(bmp_info_header * bmp_info_header){
+    return (4 - (bmp_info_header->bitmap_width * 3) % 4) % 4;
+}
+
+int get_pixel_array_width(bmp_info_header * bmp_info_header){
+    return bmp_info_header->bitmap_width * PIXEL_NUM_BYTES + get_pixel_array_width_padding(bmp_info_header);
+}
+
+int get_pixel_array_height(bmp_info_header * bmp_info_header){
+    return bmp_info_header->bitmap_height;
 }

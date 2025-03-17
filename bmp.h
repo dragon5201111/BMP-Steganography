@@ -25,12 +25,25 @@ typedef struct bmp_info_header{
     uint32_t important_colors;
 }bmp_info_header;
 
+typedef struct bmp_pixel{
+    uint8_t blue;
+    uint8_t green;
+    uint8_t red;
+}bmp_pixel;
+
 // Restore structure padding
 #pragma pack(pop)
 
 void _print_bmp_header(bmp_header *);
 void _print_bmp_info_header(bmp_info_header *);
 
+int is_valid_bits_per_pixel(int);
+
 int read_bmp_file_into_struct(FILE *, void *, size_t);
 int read_bmp_file_into_bmp_header(FILE *, bmp_header *);
 int read_bmp_file_into_bmp_info_header(FILE *, bmp_info_header *);
+int jump_to_data_offset(FILE *, bmp_header *);
+
+int get_pixel_array_width_padding(bmp_info_header *);
+int get_pixel_array_width(bmp_info_header *);
+int get_pixel_array_height(bmp_info_header *);
