@@ -60,5 +60,5 @@ int get_pixel_array_width(bmp_info_header * bmp_info_header){
 }
 
 int get_pixel_array_height(bmp_info_header * bmp_info_header){
-    return bmp_info_header->bitmap_height;
+    return abs(bmp_info_header->bitmap_height);
 }

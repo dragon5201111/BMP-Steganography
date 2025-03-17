@@ -14,7 +14,7 @@ typedef struct bmp_header{
 typedef struct bmp_info_header{
     uint32_t size;
     uint32_t bitmap_width;
-    uint32_t bitmap_height;
+    int32_t bitmap_height;
     uint16_t planes;
     uint16_t bits_per_pixel;
     uint32_t compression;

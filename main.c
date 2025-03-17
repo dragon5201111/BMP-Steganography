@@ -23,6 +23,7 @@ int main(int argc, char ** argv){
         0.) Add check for if is a bmp file
         1.) Implement error checking for reading and jumping to offset
         2.) Read data into pixel array
+        3.) Write data back (bottom up or top down)
     */
     bmp_header bmp_h;
     bmp_info_header bmp_info_h;
@@ -40,11 +41,11 @@ int main(int argc, char ** argv){
     #endif
 
     jump_to_data_offset(bmp_file, &bmp_h);
-    
+
     int pixel_array_width = get_pixel_array_width(&bmp_info_h);
     int pixel_array_height = get_pixel_array_height(&bmp_info_h);
     bmp_pixel ** pixel_array;
-   
+
     fclose(bmp_file);
     return 0;
 }
