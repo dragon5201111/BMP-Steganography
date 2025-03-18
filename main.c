@@ -1,30 +1,34 @@
 #include <stdio.h>
 #include <errno.h>
+#include <stdlib.h>
 #include "bmp.h"
 #include "constants.h"
 #include "utility.h"
 
 #define DEBUG_BMP
 
+
 int main(int argc, char ** argv){
     // argv[1] = bmp file
+    // argv[2] = output file
     if(argc != ARG_MIN){
         print_usage();
+        return -1;
     }
 
-    FILE * bmp_file = fopen(argv[1], READ_FILE);
+    FILE * bmp_file, * output_file;
+    output_file = fopen(argv[2], WRITE_FILE);
+    if(output_file == NULL){
+        perror(FILE_OPEN_ERR);
+        return -1;
+    }
+
+    bmp_file = fopen(argv[1], READ_FILE);
     if(bmp_file == NULL){
         perror(FILE_OPEN_ERR);
         return -1;
     }
 
-    /*
-        TODO:
-        0.) Add check for if is a bmp file
-        1.) Implement error checking for reading and jumping to offset
-        2.) Read data into pixel array
-        3.) Write data back (bottom up or top down)
-    */
     bmp_header bmp_h;
     bmp_info_header bmp_info_h;
     read_bmp_file_into_bmp_header(bmp_file, &bmp_h);
@@ -40,12 +44,9 @@ int main(int argc, char ** argv){
         _print_bmp_info_header(&bmp_info_h);
     #endif
 
-    jump_to_data_offset(bmp_file, &bmp_h);
-
-    int pixel_array_width = get_pixel_array_width(&bmp_info_h);
-    int pixel_array_height = get_pixel_array_height(&bmp_info_h);
-    bmp_pixel ** pixel_array;
+    jump_to_data_offset_from_start(bmp_file, &bmp_h);
 
     fclose(bmp_file);
+    fclose(output_file);
     return 0;
 }

@@ -46,19 +46,6 @@ int read_bmp_file_into_bmp_info_header(FILE * bmp_file, bmp_info_header * bmp_in
     return read_bmp_file_into_struct(bmp_file, bmp_info_header, sizeof(*bmp_info_header));
 }
 
-int jump_to_data_offset(FILE * bmp_file, bmp_header * bmp_header){
+int jump_to_data_offset_from_start(FILE * bmp_file, bmp_header * bmp_header){
     return fseek(bmp_file, bmp_header->data_offset, SEEK_SET);
-}
-
-int get_pixel_array_width_padding(bmp_info_header * bmp_info_header){
-    return (4 - (bmp_info_header->bitmap_width * 3) % 4) % 4;
-}
-
-// Rows of a pixel array for a bmp file are alligned to the nearest 4 byte boundary. Returns width in bytes.
-int get_pixel_array_width(bmp_info_header * bmp_info_header){
-    return bmp_info_header->bitmap_width * PIXEL_NUM_BYTES + get_pixel_array_width_padding(bmp_info_header);
-}
-
-int get_pixel_array_height(bmp_info_header * bmp_info_header){
-    return abs(bmp_info_header->bitmap_height);
 }

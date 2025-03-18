@@ -42,8 +42,4 @@ int is_valid_bits_per_pixel(int);
 int read_bmp_file_into_struct(FILE *, void *, size_t);
 int read_bmp_file_into_bmp_header(FILE *, bmp_header *);
 int read_bmp_file_into_bmp_info_header(FILE *, bmp_info_header *);
-int jump_to_data_offset(FILE *, bmp_header *);
-
-int get_pixel_array_width_padding(bmp_info_header *);
-int get_pixel_array_width(bmp_info_header *);
-int get_pixel_array_height(bmp_info_header *);
+int jump_to_data_offset_from_start(FILE *, bmp_header *);
