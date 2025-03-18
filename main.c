@@ -33,11 +33,6 @@ int main(int argc, char ** argv){
     bmp_info_header bmp_info_h;
     read_bmp_file_into_bmp_header(bmp_file, &bmp_h);
     read_bmp_file_into_bmp_info_header(bmp_file, &bmp_info_h);
-    
-    if(!is_valid_bits_per_pixel(bmp_info_h.bits_per_pixel)){
-        fprintf(stderr, BMP_BITS_PER_PIXEL_ERR);
-        return -1;
-    }
 
     #ifdef DEBUG_BMP
         _print_bmp_header(&bmp_h);
@@ -45,6 +40,7 @@ int main(int argc, char ** argv){
     #endif
 
     jump_to_data_offset_from_start(bmp_file, &bmp_h);
+
 
     fclose(bmp_file);
     fclose(output_file);

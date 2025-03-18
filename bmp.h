@@ -37,8 +37,6 @@ typedef struct bmp_pixel{
 void _print_bmp_header(bmp_header *);
 void _print_bmp_info_header(bmp_info_header *);
 
-int is_valid_bits_per_pixel(int);
-
 int read_bmp_file_into_struct(FILE *, void *, size_t);
 int read_bmp_file_into_bmp_header(FILE *, bmp_header *);
 int read_bmp_file_into_bmp_info_header(FILE *, bmp_info_header *);

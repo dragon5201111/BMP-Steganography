@@ -29,11 +29,6 @@ void _print_bmp_info_header(bmp_info_header * bmp_info_header){
     putchar('\n');
 }
 
-// This application will only support 24-bit pixels
-int is_valid_bits_per_pixel(int bits_per_pixel){
-    return bits_per_pixel == VALID_BITS_PER_PIXEL;
-}
-
 int read_bmp_file_into_struct(FILE * bmp_file, void * s, size_t struct_size){
     return fread(s, 1, struct_size, bmp_file);
 }
