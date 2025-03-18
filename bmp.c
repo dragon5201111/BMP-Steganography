@@ -29,16 +29,25 @@ void _print_bmp_info_header(bmp_info_header * bmp_info_header){
     putchar('\n');
 }
 
-int read_bmp_file_into_struct(FILE * bmp_file, void * s, size_t struct_size){
+size_t read_bmp_file_into_struct(FILE * bmp_file, void * s, size_t struct_size){
     return fread(s, 1, struct_size, bmp_file);
 }
 
-int read_bmp_file_into_bmp_header(FILE * bmp_file, bmp_header * bmp_header){
+size_t read_bmp_file_into_bmp_header(FILE * bmp_file, bmp_header * bmp_header){
     return read_bmp_file_into_struct(bmp_file, bmp_header, sizeof(*bmp_header));
 }
 
-int read_bmp_file_into_bmp_info_header(FILE * bmp_file, bmp_info_header * bmp_info_header){
+size_t read_bmp_file_into_bmp_info_header(FILE * bmp_file, bmp_info_header * bmp_info_header){
     return read_bmp_file_into_struct(bmp_file, bmp_info_header, sizeof(*bmp_info_header));
+}
+
+int are_valid_bmp_headers(bmp_header * bmp_header, bmp_info_header * bmp_info_header){
+    return bmp_header->signature == BMP_SIG && bmp_info_header->bits_per_pixel == BMP_BITS_PER_PIXEL;
+}
+
+void close_bmp_and_output_file(FILE * bmp_file, FILE * output_file){
+    fclose(bmp_file);
+    fclose(output_file);
 }
 
 int jump_to_data_offset_from_start(FILE * bmp_file, bmp_header * bmp_header){
