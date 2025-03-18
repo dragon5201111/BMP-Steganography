@@ -13,9 +13,9 @@ int main(int argc, char ** argv){
         return -1;
     }
 
-    FILE * bmp_file;
-    FILE * output_file;
-    
+    FILE * bmp_file = NULL;
+    FILE * output_file = NULL;
+
     output_file = fopen(argv[2], WRITE_FILE);
     if(is_null(output_file)){
         perror(FILE_OPEN_ERR);
@@ -28,11 +28,11 @@ int main(int argc, char ** argv){
         return -1;
     }
 
-    bmp_header bmp_h;
-    bmp_info_header bmp_info_h;
+    bmp_header bmp_h = {0};
+    bmp_info_header bmp_info_h = {0};
     read_bmp_file_into_bmp_header(bmp_file, &bmp_h);
     read_bmp_file_into_bmp_info_header(bmp_file, &bmp_info_h);
-
+    
     if(!are_valid_bmp_headers(&bmp_h, &bmp_info_h)){
         printf(INVALID_BMP_FILE_ERR);
         close_bmp_and_output_file(bmp_file, output_file);
