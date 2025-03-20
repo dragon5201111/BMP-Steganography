@@ -48,8 +48,10 @@ size_t write_bmp_headers_to_file(bmp_header *, bmp_info_header *, FILE *);
 int are_valid_bmp_headers(bmp_header *, bmp_info_header *);
 
 void close_bmp_and_output_file(FILE *, FILE *);
-
 int jump_to_data_offset_from_start(FILE *, bmp_header *);
 
 size_t write_bmp_file_into_pixel_array(FILE *, bmp_pixel *, int32_t, uint32_t);
 size_t write_pixel_array_to_file(bmp_pixel *, int32_t, uint32_t, FILE *);
+
+bmp_pixel * alloc_pixel_array(int32_t, uint32_t);
+void dealloc_pixel_array(bmp_pixel *);
