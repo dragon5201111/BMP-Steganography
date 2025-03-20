@@ -44,6 +44,7 @@ void _print_bmp_info_header(bmp_info_header *);
 size_t read_bmp_file_into_struct(FILE *, void *, size_t);
 size_t read_bmp_file_into_bmp_header(FILE *, bmp_header *);
 size_t read_bmp_file_into_bmp_info_header(FILE *, bmp_info_header *);
+size_t write_header_to_file(void *, size_t, FILE *);
 size_t write_bmp_headers_to_file(bmp_header *, bmp_info_header *, FILE *);
 int are_valid_bmp_headers(bmp_header *, bmp_info_header *);
 

@@ -16,13 +16,13 @@ int main(int argc, char ** argv){
     FILE * bmp_file = NULL;
     FILE * output_file = NULL;
 
-    bmp_file = fopen(argv[1], READ_FILE);
+    bmp_file = fopen(argv[1], READ_FILE_BINARY);
     if(is_null(bmp_file)){
         perror(FILE_OPEN_ERR);
         return -1;
     }
 
-    output_file = fopen(argv[2], WRITE_FILE);
+    output_file = fopen(argv[2], WRITE_FILE_BINARY);
     if(is_null(output_file)){
         perror(FILE_OPEN_ERR);
         return -1;
