@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "bmp.h"
 #include "constants.h"
+#include "utility.h"
 
 void _print_bmp_header(bmp_header * bmp_header){
     printf("BMP Header Information:\n");
@@ -127,7 +128,7 @@ bmp_pixel * alloc_pixel_array(int32_t pixel_array_height, uint32_t pixel_array_w
 }
 
 void dealloc_pixel_array(bmp_pixel * pixel_array){
-    if(pixel_array == NULL){
+    if(is_null(pixel_array)){
         return;
     }
 
