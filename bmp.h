@@ -44,8 +44,12 @@ void _print_bmp_info_header(bmp_info_header *);
 size_t read_bmp_file_into_struct(FILE *, void *, size_t);
 size_t read_bmp_file_into_bmp_header(FILE *, bmp_header *);
 size_t read_bmp_file_into_bmp_info_header(FILE *, bmp_info_header *);
+size_t write_bmp_headers_to_file(bmp_header *, bmp_info_header *, FILE *);
 int are_valid_bmp_headers(bmp_header *, bmp_info_header *);
 
 void close_bmp_and_output_file(FILE *, FILE *);
 
 int jump_to_data_offset_from_start(FILE *, bmp_header *);
+
+size_t write_bmp_file_into_pixel_array(FILE *, bmp_pixel *, int32_t, uint32_t);
+size_t write_pixel_array_to_file(bmp_pixel *, int32_t, uint32_t, FILE *);
