@@ -2,7 +2,6 @@
 #include <errno.h>
 #include <stdlib.h>
 #include "bmp.h"
-#include "constants.h"
 #include "utility.h"
 
 int main(int argc, char ** argv){
@@ -31,8 +30,8 @@ int main(int argc, char ** argv){
 
     bmp_header bmp_h = {0};
     bmp_info_header bmp_info_h = {0};
-    read_bmp_file_into_bmp_header(bmp_file, &bmp_h);
-    read_bmp_file_into_bmp_info_header(bmp_file, &bmp_info_h);
+    read_file_into_bmp_header(bmp_file, &bmp_h);
+    read_file_into_bmp_info_header(bmp_file, &bmp_info_h);
 
     if(!are_valid_bmp_headers(&bmp_h, &bmp_info_h)){
         printf(INVALID_BMP_FILE_ERR, argv[1]);
@@ -41,7 +40,7 @@ int main(int argc, char ** argv){
     }
 
 
-    jump_to_data_offset_from_start(bmp_file, &bmp_h);
+    jump_to_pixel_data_from_start(bmp_file, &bmp_h);
 
     int32_t pixel_array_height = abs(bmp_info_h.bitmap_height);
     uint32_t pixel_array_width = bmp_info_h.bitmap_width;

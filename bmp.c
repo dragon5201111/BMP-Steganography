@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "bmp.h"
-#include "constants.h"
 #include "utility.h"
 
 void _print_bmp_header(bmp_header * bmp_header){
@@ -33,11 +32,13 @@ void _print_bmp_info_header(bmp_info_header * bmp_info_header){
 size_t read_bmp_file_into_struct(FILE * bmp_file, void * s, size_t struct_size){
     return fread(s, 1, struct_size, bmp_file);
 }
-size_t read_bmp_file_into_bmp_header(FILE * bmp_file, bmp_header * bmp_header){
-    return read_bmp_file_into_struct(bmp_file, bmp_header, sizeof(*bmp_header));
+
+size_t read_file_into_bmp_header(FILE * file, bmp_header * bmp_header){
+    return read_bmp_file_into_struct(file, bmp_header, sizeof(*bmp_header));
 }
-size_t read_bmp_file_into_bmp_info_header(FILE * bmp_file, bmp_info_header * bmp_info_header){
-    return read_bmp_file_into_struct(bmp_file, bmp_info_header, sizeof(*bmp_info_header));
+
+size_t read_file_into_bmp_info_header(FILE * file, bmp_info_header * bmp_info_header){
+    return read_bmp_file_into_struct(file, bmp_info_header, sizeof(*bmp_info_header));
 }
 
 size_t write_header_to_file(void *header, size_t header_size, FILE *file) {
@@ -64,7 +65,7 @@ void close_bmp_and_output_file(FILE * bmp_file, FILE * output_file){
     fclose(bmp_file);
     fclose(output_file);
 }
-int jump_to_data_offset_from_start(FILE * bmp_file, bmp_header * bmp_header){
+int jump_to_pixel_data_from_start(FILE * bmp_file, bmp_header * bmp_header){
     return fseek(bmp_file, bmp_header->data_offset, SEEK_SET);
 }
 
