@@ -29,16 +29,16 @@ void _print_bmp_info_header(bmp_info_header * bmp_info_header){
     putchar('\n');
 }
 
-size_t read_bmp_file_into_struct(FILE * bmp_file, void * s, size_t struct_size){
-    return fread(s, 1, struct_size, bmp_file);
+size_t read_file_into_struct(FILE * file, void * s, size_t struct_size){
+    return fread(s, 1, struct_size, file);
 }
 
 size_t read_file_into_bmp_header(FILE * file, bmp_header * bmp_header){
-    return read_bmp_file_into_struct(file, bmp_header, sizeof(*bmp_header));
+    return read_file_into_struct(file, bmp_header, sizeof(*bmp_header));
 }
 
 size_t read_file_into_bmp_info_header(FILE * file, bmp_info_header * bmp_info_header){
-    return read_bmp_file_into_struct(file, bmp_info_header, sizeof(*bmp_info_header));
+    return read_file_into_struct(file, bmp_info_header, sizeof(*bmp_info_header));
 }
 
 size_t write_header_to_file(void *header, size_t header_size, FILE *file) {
@@ -47,13 +47,8 @@ size_t write_header_to_file(void *header, size_t header_size, FILE *file) {
 
 size_t write_bmp_headers_to_file(bmp_header * bmp_header, bmp_info_header * bmp_info_header, FILE * file){
     size_t total_bytes_written = 0;
-    
     total_bytes_written += write_header_to_file(bmp_header, sizeof(*bmp_header), file);
-    if (total_bytes_written <= 0) return 0;
-
     total_bytes_written += write_header_to_file(bmp_info_header, sizeof(*bmp_info_header), file);
-    if (total_bytes_written <= 0) return 0;
-
     return total_bytes_written;
 }
 
@@ -73,20 +68,17 @@ uint32_t get_padding_bytes(uint32_t pixel_array_width){
     return ((4 - (pixel_array_width * BYTES_PER_PIXEL) % 4) % 4);
 }
 
-size_t write_bmp_file_into_pixel_array(FILE * bmp_file, bmp_pixel * pixel_array, int32_t pixel_array_height, uint32_t pixel_array_width){
+
+size_t write_file_into_pixel_array(FILE * file, bmp_pixel * pixel_array, int32_t pixel_array_height, uint32_t pixel_array_width){
     uint32_t padding_bytes = get_padding_bytes(pixel_array_width);
     size_t bytes_read = 0;
     size_t total_bytes_read = 0;
     
     for (int y = 0; y < pixel_array_height; y++) {
-        bytes_read = fread(&pixel_array[y * pixel_array_width], sizeof(bmp_pixel), pixel_array_width, bmp_file);
-
-        if (bytes_read <= 0) {
-            return bytes_read;
-        }
+        bytes_read = fread(&pixel_array[y * pixel_array_width], sizeof(bmp_pixel), pixel_array_width, file);
 
         if (padding_bytes > 0) {
-            fseek(bmp_file, padding_bytes, SEEK_CUR);
+            fseek(file, padding_bytes, SEEK_CUR);
         }
 
         total_bytes_read += bytes_read;
@@ -103,22 +95,11 @@ size_t write_pixel_array_to_file(bmp_pixel * pixel_array, int32_t pixel_array_he
 
     for (int y = 0; y < pixel_array_height; y++) {
         bytes_written = fwrite(&pixel_array[y * pixel_array_width], sizeof(bmp_pixel), pixel_array_width, file);
-        
-        if (bytes_written <= 0) {
-            return bytes_written;
-        }
-
         total_bytes_written += bytes_written;
 
         if (padding_bytes > 0) {
-            bytes_written = fwrite(&zero, sizeof(uint8_t), padding_bytes, file);
+            total_bytes_written += fwrite(&zero, sizeof(uint8_t), padding_bytes, file);
         }
-
-        if (bytes_written <= 0) {
-            return bytes_written;
-        }
-
-        total_bytes_written += bytes_written;
     }
 
     return total_bytes_written;

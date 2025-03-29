@@ -31,6 +31,20 @@ typedef struct bmp_pixel{
     uint8_t red;
 }bmp_pixel;
 
+typedef struct bmp_pixel_array{
+    bmp_pixel * array;
+    uint32_t width;
+    int32_t height;
+    uint32_t padding_bytes;
+}bmp_pixel_array;
+
+typedef struct bmp_image{
+    bmp_header * header;
+    bmp_info_header * info_header;
+    bmp_pixel_array * pixel_array;
+}bmp_image;
+
+
 // Restore structure padding
 #pragma pack(pop)
 
@@ -40,7 +54,7 @@ typedef struct bmp_pixel{
 void _print_bmp_header(bmp_header *);
 void _print_bmp_info_header(bmp_info_header *);
 
-size_t read_bmp_file_into_struct(FILE *, void *, size_t);
+size_t read_file_into_struct(FILE *, void *, size_t);
 size_t read_file_into_bmp_header(FILE *, bmp_header *);
 size_t read_file_into_bmp_info_header(FILE *, bmp_info_header *);
 size_t write_header_to_file(void *, size_t, FILE *);
@@ -50,7 +64,7 @@ int are_valid_bmp_headers(bmp_header *, bmp_info_header *);
 void close_bmp_and_output_file(FILE *, FILE *);
 int jump_to_pixel_data_from_start(FILE *, bmp_header *);
 
-size_t write_bmp_file_into_pixel_array(FILE *, bmp_pixel *, int32_t, uint32_t);
+size_t write_file_into_pixel_array(FILE *, bmp_pixel *, int32_t, uint32_t);
 size_t write_pixel_array_to_file(bmp_pixel *, int32_t, uint32_t, FILE *);
 
 bmp_pixel * alloc_pixel_array(int32_t, uint32_t);
