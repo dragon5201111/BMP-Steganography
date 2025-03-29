@@ -116,3 +116,38 @@ void dealloc_pixel_array(bmp_pixel * pixel_array){
 
     free(pixel_array);
 }
+
+
+bmp_image * alloc_bmp_image(void){
+    bmp_image * image = (bmp_image *) malloc(sizeof(bmp_image));
+    if(image == NULL){
+        return NULL;
+    }
+
+    image->header = (bmp_header *) malloc(sizeof(bmp_header));
+    if(image->header == NULL){
+        return NULL;
+    }
+
+    image->info_header = (bmp_info_header *) malloc(sizeof(bmp_info_header));
+    if(image->info_header == NULL){
+        return NULL;
+    }
+
+    image->pixel_array = (bmp_pixel_array *) malloc(sizeof(bmp_pixel_array));
+    if(image->pixel_array == NULL){
+        return NULL;
+    }
+
+    return image;
+}
+
+size_t initialize_bmp_image_headers(FILE * file, bmp_image * image){
+    size_t bytes_read = 0;
+    bytes_read += read_file_into_bmp_header(file, image->header);
+    bytes_read += read_file_into_bmp_info_header(file, image->info_header);
+    return bytes_read;
+}
+
+
+

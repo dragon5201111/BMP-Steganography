@@ -27,6 +27,9 @@ int main(int argc, char ** argv){
         return -1;
     }
 
+    // bmp_image * bmp_image = alloc_bmp_image();
+    // initialize_bmp_image_headers(bmp_file, bmp_image);
+   
     bmp_header bmp_h = {0};
     bmp_info_header bmp_info_h = {0};
     read_file_into_bmp_header(bmp_file, &bmp_h);
