@@ -31,18 +31,6 @@ typedef struct bmp_pixel{
     uint8_t red;
 }bmp_pixel;
 
-typedef struct bmp_pixel_array{
-    bmp_pixel * array;
-    uint32_t padding_bytes;
-}bmp_pixel_array;
-
-typedef struct bmp_image{
-    bmp_header * header;
-    bmp_info_header * info_header;
-    bmp_pixel_array * pixel_array;
-}bmp_image;
-
-
 // Restore structure padding
 #pragma pack(pop)
 
@@ -67,6 +55,3 @@ size_t write_pixel_array_to_file(bmp_pixel *, int32_t, uint32_t, FILE *);
 
 bmp_pixel * alloc_pixel_array(int32_t, uint32_t);
 void dealloc_pixel_array(bmp_pixel *);
-
-bmp_image * alloc_bmp_image(void);
-size_t initialize_bmp_image_headers(FILE *, bmp_image *);
