@@ -26,7 +26,7 @@ int main(int argc, char ** argv){
         perror(FILE_OPEN_ERR);
         return -1;
     }
-
+      
     // bmp_image * bmp_image = alloc_bmp_image();
     // initialize_bmp_image_headers(bmp_file, bmp_image);
    

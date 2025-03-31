@@ -139,6 +139,7 @@ bmp_image * alloc_bmp_image(void){
         return NULL;
     }
 
+    image->pixel_array->array = NULL;
     return image;
 }
 
