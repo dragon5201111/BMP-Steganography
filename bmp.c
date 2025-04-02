@@ -45,13 +45,6 @@ size_t write_header_to_file(void *header, size_t header_size, FILE *file) {
     return fwrite(header, header_size, 1, file);
 }
 
-size_t write_bmp_headers_to_file(bmp_header * bmp_header, bmp_info_header * bmp_info_header, FILE * file){
-    size_t total_bytes_written = 0;
-    total_bytes_written += write_header_to_file(bmp_header, sizeof(*bmp_header), file);
-    total_bytes_written += write_header_to_file(bmp_info_header, sizeof(*bmp_info_header), file);
-    return total_bytes_written;
-}
-
 int are_valid_bmp_headers(bmp_header * bmp_header, bmp_info_header * bmp_info_header){
     return bmp_header->signature == BMP_SIG && bmp_info_header->bits_per_pixel == BMP_BITS_PER_PIXEL;
 }
@@ -69,41 +62,6 @@ uint32_t get_padding_bytes(uint32_t pixel_array_width){
 }
 
 
-size_t write_file_into_pixel_array(FILE * file, bmp_pixel * pixel_array, int32_t pixel_array_height, uint32_t pixel_array_width){
-    uint32_t padding_bytes = get_padding_bytes(pixel_array_width);
-    size_t bytes_read = 0;
-    size_t total_bytes_read = 0;
-    
-    for (int y = 0; y < pixel_array_height; y++) {
-        bytes_read = fread(&pixel_array[y * pixel_array_width], sizeof(bmp_pixel), pixel_array_width, file);
-
-        if (padding_bytes > 0) {
-            fseek(file, padding_bytes, SEEK_CUR);
-        }
-
-        total_bytes_read += bytes_read;
-    }
-
-    return total_bytes_read;
-}
-
-size_t write_pixel_array_to_file(bmp_pixel * pixel_array, int32_t pixel_array_height, uint32_t pixel_array_width, FILE * file){
-    uint8_t zero = 0;
-    uint32_t padding_bytes = get_padding_bytes(pixel_array_width);
-    size_t bytes_written = 0;
-    size_t total_bytes_written = 0;
-
-    for (int y = 0; y < pixel_array_height; y++) {
-        bytes_written = fwrite(&pixel_array[y * pixel_array_width], sizeof(bmp_pixel), pixel_array_width, file);
-        total_bytes_written += bytes_written;
-
-        if (padding_bytes > 0) {
-            total_bytes_written += fwrite(&zero, sizeof(uint8_t), padding_bytes, file);
-        }
-    }
-
-    return total_bytes_written;
-}
 
 bmp_pixel * alloc_pixel_array(int32_t pixel_array_height, uint32_t pixel_array_width){
     return (bmp_pixel *) malloc(sizeof(bmp_pixel) * pixel_array_height * pixel_array_width);
@@ -115,4 +73,104 @@ void dealloc_pixel_array(bmp_pixel * pixel_array){
     }
 
     free(pixel_array);
+}
+
+bmp_image * alloc_bmp_image(){
+    bmp_image * image = (bmp_image *) malloc(sizeof(bmp_image));
+    if(is_null(image)){
+        return NULL;
+    }
+
+    image->pixel_array = NULL;
+    return image;
+}
+
+
+void dealloc_bmp_image(bmp_image * image){
+    if(is_null(image)){
+        return;
+    }
+    
+    dealloc_pixel_array(image->pixel_array);
+    free(image);
+}
+
+void initialize_bmp_image_pixel_array(bmp_image * image){
+    int32_t pixel_array_height = abs(image->info_header.bitmap_height);
+    uint32_t pixel_array_width = image->info_header.bitmap_width;
+
+    image->pixel_array_height = pixel_array_height;
+    image->pixel_array_width = pixel_array_width;
+    image->padding_bytes = get_padding_bytes(pixel_array_width);
+    image->pixel_array = alloc_pixel_array(pixel_array_height, pixel_array_width);
+}
+
+size_t read_file_into_bmp_image(FILE * file, bmp_image * image){
+    size_t total_bytes_read = 0;
+
+    total_bytes_read += read_file_into_bmp_header(file, &image->header);
+    total_bytes_read += read_file_into_bmp_info_header(file, &image->info_header);
+
+    jump_to_pixel_data_from_start(file, &image->header);
+    initialize_bmp_image_pixel_array(image);
+
+    total_bytes_read += read_file_into_bmp_image_pixel_array(file, image);
+
+    return total_bytes_read;
+}
+
+size_t read_file_into_bmp_image_pixel_array(FILE *file, bmp_image *image) {
+    size_t total_bytes_read = 0;
+    uint32_t padding_bytes = image->padding_bytes;
+    int32_t pixel_array_height = image->pixel_array_height;
+    uint32_t pixel_array_width = image->pixel_array_width;
+    bmp_pixel *pixel_array = image->pixel_array;
+
+    for (int y = 0; y < pixel_array_height; y++) {
+        size_t bytes_read = fread(&pixel_array[y * pixel_array_width], sizeof(bmp_pixel), pixel_array_width, file);
+        total_bytes_read += bytes_read;
+
+        if (padding_bytes > 0) {
+            fseek(file, padding_bytes, SEEK_CUR);
+        }
+    }
+
+    return total_bytes_read;
+}
+
+size_t write_bmp_image_pixel_array_to_file(bmp_image * image, FILE * file){
+    uint8_t zero = 0;
+    uint32_t padding_bytes = image->padding_bytes;
+    int32_t pixel_array_height = image->pixel_array_height;
+    uint32_t pixel_array_width = image->pixel_array_width;
+    bmp_pixel *pixel_array = image->pixel_array;
+
+    size_t total_bytes_written = 0;
+
+    for (int y = 0; y < pixel_array_height; y++) {
+        size_t bytes_written = 0;
+        bytes_written = fwrite(&pixel_array[y * pixel_array_width], sizeof(bmp_pixel), pixel_array_width, file);
+        total_bytes_written += bytes_written;
+
+        if (padding_bytes > 0) {
+            total_bytes_written += fwrite(&zero, sizeof(uint8_t), padding_bytes, file);
+        }
+    }
+
+    return total_bytes_written;
+}
+
+size_t write_bmp_image_headers_to_file(bmp_image * image, FILE * file){
+    size_t total_bytes_written = 0;
+    total_bytes_written += write_header_to_file(&image->header, sizeof(image->header), file);
+    total_bytes_written += write_header_to_file(&image->info_header, sizeof(image->info_header), file);
+    return total_bytes_written;
+}
+
+
+size_t write_bmp_image_to_file(bmp_image * image, FILE * file){
+    size_t total_bytes_written = 0;
+    total_bytes_written += write_bmp_image_headers_to_file(image, file);
+    total_bytes_written += write_bmp_image_pixel_array_to_file(image, file);
+    return total_bytes_written;
 }
