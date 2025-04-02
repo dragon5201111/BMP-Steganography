@@ -33,6 +33,10 @@ int main(int argc, char ** argv){
         return -1;
     }
 
+    // TODO:
+    // Add validation for verifying bmp_image is of correct type
+    // Add validation for verifying correct amount of bytes were read into bmp_image
+    // Add validation for verifying correct amount of bytes were written to output_file
     read_file_into_bmp_image(bmp_file, bmp_image);
     write_bmp_image_to_file(bmp_image, output_file);
 
