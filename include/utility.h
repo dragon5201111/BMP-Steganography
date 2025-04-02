@@ -1,9 +1,10 @@
 #pragma once
 
-#define ARG_MIN 3
+#define ARG_MIN 4
 #define READ_FILE_BINARY "rb"
 #define WRITE_FILE_BINARY "wb"
 #define BYTES_PER_PIXEL 3
+#define BYTE_READ_SIZE 4096
 
 #define USAGE_STR "Usage: ./main [BMP FILE] [OUTPUT FILE]\n"
 #define FILE_OPEN_ERR "Error opening file"

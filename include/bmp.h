@@ -66,6 +66,7 @@ bmp_image * alloc_bmp_image();
 void dealloc_bmp_image(bmp_image *);
 size_t read_file_into_bmp_image(FILE *, bmp_image *);
 size_t read_file_into_bmp_image_pixel_array(FILE *, bmp_image *);
+size_t encode_file_into_bmp_image(FILE *, bmp_image *);
 size_t write_bmp_image_headers_to_file(bmp_image *, FILE *);
 size_t write_bmp_image_pixel_array_to_file(bmp_image *, FILE *);
 size_t write_bmp_image_to_file(bmp_image *, FILE *);

@@ -174,3 +174,42 @@ size_t write_bmp_image_to_file(bmp_image * image, FILE * file){
     total_bytes_written += write_bmp_image_pixel_array_to_file(image, file);
     return total_bytes_written;
 }
+
+size_t encode_file_into_bmp_image(FILE *file, bmp_image * image) {
+    bmp_pixel * pixel_array = image->pixel_array;
+    size_t bytes_encoded = 0;
+    int pixel_index = 0;
+    int counter = 1;  // 1: blue, 2: green, 3: red
+    
+    uint8_t byte_buffer[BYTE_READ_SIZE];
+    size_t bytes_read = 0;
+    uint8_t bit;
+    bmp_pixel * current_pixel;
+
+    while ((bytes_read = fread(byte_buffer, sizeof(uint8_t), BYTE_READ_SIZE, file)) > 0) {
+        bytes_encoded += bytes_read;
+
+        for (size_t byte_index = 0; byte_index < bytes_read; byte_index++) {
+            uint8_t byte = byte_buffer[byte_index];
+
+            for (int i = 7; i >= 0; i--) {
+                bit = (byte >> i) & 1;
+                current_pixel = &pixel_array[pixel_index];
+
+                if (counter == 1) {
+                    current_pixel->blue |= bit;
+                    counter++;
+                } else if (counter == 2) {
+                    current_pixel->green |= bit;
+                    counter++;
+                } else {
+                    current_pixel->red |= bit; 
+                    pixel_index++;  
+                    counter = 1;
+                }
+            }
+        }
+    }
+
+    return bytes_encoded;
+}
