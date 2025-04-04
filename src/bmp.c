@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "bmp.h"
-#include "utility.h"
 
 void _print_bmp_header(bmp_header * bmp_header){
     printf("BMP Header Information:\n");
@@ -179,7 +178,7 @@ size_t encode_file_into_bmp_image(FILE *file, bmp_image * image) {
     bmp_pixel * pixel_array = image->pixel_array;
     size_t bytes_encoded = 0;
     int pixel_index = 0;
-    int counter = 1;  // 1: blue, 2: green, 3: red
+    int counter = 0;  // 1: blue, 2: green, 0: red
     
     uint8_t byte_buffer[BYTE_READ_SIZE];
     size_t bytes_read = 0;
@@ -195,21 +194,27 @@ size_t encode_file_into_bmp_image(FILE *file, bmp_image * image) {
             for (int i = 7; i >= 0; i--) {
                 bit = (byte >> i) & 1;
                 current_pixel = &pixel_array[pixel_index];
+                counter = (counter + 1) % 3;
 
                 if (counter == 1) {
                     current_pixel->blue |= bit;
-                    counter++;
                 } else if (counter == 2) {
                     current_pixel->green |= bit;
-                    counter++;
                 } else {
                     current_pixel->red |= bit; 
                     pixel_index++;  
-                    counter = 1;
                 }
             }
         }
     }
 
     return bytes_encoded;
+}
+
+int is_null(void * obj){
+    return obj == NULL;
+}
+
+void display_usage(void){
+    printf(USAGE_STR);
 }

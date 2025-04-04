@@ -1,56 +1,51 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "bmp.h"
-#include "utility.h"
+
+// TODO:
+// Add validation for verifying bmp_image is of correct type
+// Add validation for verifying correct amount of bytes were read into bmp_image
+// Add validation for verifying correct amount of bytes were written to output_file
+// Add validation to ensure input file is sufficiently sized to be encoded
+// Add validation for arguments
 
 int main(int argc, char ** argv){
-    // argv[1] = bmp file
-    // argv[2] = output file
+    /*
+        ./ -e [bmp image] [encoded image dest.] [file to encode]
+        ./ -d [bmp image] [file name] [file size]
+    */
+
     if(argc < ARG_MIN){
-        print_usage();
-        return -1;
+        display_usage();
+        exit(EXIT_FAILURE);
     }
 
-    FILE * bmp_file = NULL;
-    FILE * output_file = NULL;
-    FILE * input_file = NULL;
+    int opt;
+    int encode = 0;
+    int decode = 0;
 
-    bmp_file = fopen(argv[1], READ_FILE_BINARY);
-    if(is_null(bmp_file)){
-        perror(FILE_OPEN_ERR);
-        return -1;
+    while((opt = getopt(argc, argv, "ed")) != -1){
+        switch (opt)
+        {
+        case 'e':
+            encode = 1;
+            break;
+        
+        case 'd':
+            decode = 1;
+            break;
+        default:
+            display_usage();
+            exit(EXIT_FAILURE);
+        }
+    }
+    
+    if(!encode || !decode){
+        display_usage();
+        exit(EXIT_FAILURE);
     }
 
-    output_file = fopen(argv[2], WRITE_FILE_BINARY);
-    if(is_null(output_file)){
-        perror(FILE_OPEN_ERR);
-        return -1;
-    }
-
-    input_file = fopen(argv[3], READ_FILE_BINARY);
-    if(is_null(input_file)){
-        perror(FILE_OPEN_ERR);
-        return -1;
-    }
-      
-    bmp_image * bmp_image = alloc_bmp_image();
-    if(is_null(bmp_image)){
-        perror(BMP_IMAGE_ALLOC_ERR);
-        return -1;
-    }
-
-    // TODO:
-    // Add validation for verifying bmp_image is of correct type
-    // Add validation for verifying correct amount of bytes were read into bmp_image
-    // Add validation for verifying correct amount of bytes were written to output_file
-    // Add validation to ensure input file is sufficiently sized to be encoded
-    // Add validation for arguments
-    read_file_into_bmp_image(bmp_file, bmp_image);
-    encode_file_into_bmp_image(input_file, bmp_image);
-    write_bmp_image_to_file(bmp_image, output_file);
-
-    dealloc_bmp_image(bmp_image);
-    close_bmp_and_output_file(bmp_file, output_file);
-    return 0;
+    return EXIT_SUCCESS;
 }

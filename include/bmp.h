@@ -1,6 +1,25 @@
 #pragma once
 
 #include <stdint.h>
+
+
+#define ARG_MIN 5
+
+#define USAGE_STR "Malformed program flag or arguments.\nCorrect Usage:\n\t./bmpSteg -e [bmp image] [file to encode]\n\t./bmpSteg -d [bmp image] [file name] [file size]\n"
+
+#define READ_FILE_BINARY "rb"
+#define WRITE_FILE_BINARY "wb"
+
+#define BMP_SIG 0x4D42
+#define BMP_BITS_PER_PIXEL 24
+#define BYTES_PER_PIXEL 3
+#define BYTE_READ_SIZE 4096
+
+#define FILE_OPEN_ERR "Error opening file"
+#define INVALID_BMP_FILE_ERR "Invalid file %s. Program requires a 24 bits per pixel bmp file.\n"
+#define BMP_IMAGE_ALLOC_ERR "Unable to allocate memory for bmp image.\n"
+
+
 // Omit structure padding enforced by compilier
 #pragma pack(push, 1)
 
@@ -43,9 +62,6 @@ typedef struct bmp_image {
 // Restore structure padding
 #pragma pack(pop)
 
-#define BMP_SIG 0x4D42
-#define BMP_BITS_PER_PIXEL 24
-
 void _print_bmp_header(bmp_header *);
 void _print_bmp_info_header(bmp_info_header *);
 
@@ -70,3 +86,6 @@ size_t encode_file_into_bmp_image(FILE *, bmp_image *);
 size_t write_bmp_image_headers_to_file(bmp_image *, FILE *);
 size_t write_bmp_image_pixel_array_to_file(bmp_image *, FILE *);
 size_t write_bmp_image_to_file(bmp_image *, FILE *);
+
+int is_null(void * obj);
+void display_usage(void);
