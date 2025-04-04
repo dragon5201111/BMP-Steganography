@@ -12,11 +12,6 @@
 // Add validation for arguments
 
 int main(int argc, char ** argv){
-    /*
-        ./ -e [bmp image] [encoded image dest.] [file to encode]
-        ./ -d [bmp image] [file name] [file size]
-    */
-
     if(argc < ARG_MIN){
         display_usage();
         exit(EXIT_FAILURE);
@@ -26,14 +21,14 @@ int main(int argc, char ** argv){
     int encode = 0;
     int decode = 0;
 
-    while((opt = getopt(argc, argv, "ed")) != -1){
+    while((opt = getopt(argc, argv, OPT_STR)) != -1){
         switch (opt)
         {
-        case 'e':
+        case ENCODE:
             encode = 1;
             break;
         
-        case 'd':
+        case DECODE:
             decode = 1;
             break;
         default:
@@ -42,10 +37,25 @@ int main(int argc, char ** argv){
         }
     }
     
-    if(!encode || !decode){
+    if(!encode && !decode){
         display_usage();
         exit(EXIT_FAILURE);
     }
 
+    FILE * bmp_file = fopen(argv[2], READ_FILE_BINARY);
+    if(is_null(bmp_file)){
+        printf(FILE_OPEN_ERR, argv[2]);
+        exit(EXIT_FAILURE);
+    }
+
+    bmp_image * image = alloc_bmp_image();
+    if(is_null(image)){
+        printf(BMP_IMAGE_ALLOC_ERR);
+        exit(EXIT_FAILURE);
+    }
+
+
+    fclose(bmp_file);
+    dealloc_bmp_image(image);
     return EXIT_SUCCESS;
 }

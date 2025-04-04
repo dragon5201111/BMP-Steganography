@@ -48,10 +48,6 @@ int are_valid_bmp_headers(bmp_header * bmp_header, bmp_info_header * bmp_info_he
     return bmp_header->signature == BMP_SIG && bmp_info_header->bits_per_pixel == BMP_BITS_PER_PIXEL;
 }
 
-void close_bmp_and_output_file(FILE * bmp_file, FILE * output_file){
-    fclose(bmp_file);
-    fclose(output_file);
-}
 int jump_to_pixel_data_from_start(FILE * bmp_file, bmp_header * bmp_header){
     return fseek(bmp_file, bmp_header->data_offset, SEEK_SET);
 }
